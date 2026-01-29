@@ -1,14 +1,8 @@
-[build]
-base = "."
-command = "cp common/src/other/AccessKey.example.js common/src/other/AccessKey.js && cd web-app && npm install --legacy-peer-deps && npm run build"
-publish = "web-app/build"
-functions = "functions"
+# This project uses Firebase Hosting, not Netlify
+# Deploy to Firebase instead using: firebase deploy --only hosting
+# 
+# To build locally:
+# cp common/src/other/AccessKey.example.js common/src/other/AccessKey.js
+# cd web-app && npm install --legacy-peer-deps && npm run build
 
-[build.environment]
-NODE_VERSION = "20.20.0"
-NODE_OPTIONS = "--openssl-legacy-provider"
 
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
