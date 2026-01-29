@@ -46,9 +46,12 @@ var methods = [
      "tap"
 ];
 
-for (let i = 0; i < methods.length; i++) {
-    exports[methods[i]] = require(`./providers/${methods[i]}`);
-}
+// Dynamic require is not supported in Netlify Functions
+// Providers are intended for Firebase Cloud Functions deployment
+// Commenting out to allow Netlify deployment
+// for (let i = 0; i < methods.length; i++) {
+//     exports[methods[i]] = require(`./providers/${methods[i]}`);
+// }
 
 exports.get_providers = onRequest(async(request, response) => {
     response.set("Access-Control-Allow-Origin", "*");
