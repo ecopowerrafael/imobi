@@ -97,27 +97,28 @@ function AuthLoading(props) {
       if (result) {
         let langLocale = JSON.parse(result)['langLocale'];
         let dateLocale = JSON.parse(result)['dateLocale'];
-      if (langLocale && obj[langLocale]) {
-        i18n.addResourceBundle(
-          langLocale,
-          "translations",
-          obj[langLocale]
-        );
-        i18n.changeLanguage(langLocale);
-        moment.locale(dateLocale);
-      } else if (def1 && def1.langLocale && obj[def1.langLocale]) {
-        i18n.addResourceBundle(
-          def1.langLocale,
-          "translations",
-          obj[def1.langLocale]
-        );
-        i18n.changeLanguage(def1.langLocale);
-        moment.locale(def1.dateLocale);
-      } else {
-        // Fallback: usar idioma padrão en (inglês)
-        console.warn('⚠️ Idioma não encontrado, usando fallback inglês');
-        i18n.changeLanguage('en');
-        moment.locale('en-gb');
+        if (langLocale && obj[langLocale]) {
+          i18n.addResourceBundle(
+            langLocale,
+            "translations",
+            obj[langLocale]
+          );
+          i18n.changeLanguage(langLocale);
+          moment.locale(dateLocale);
+        } else if (def1 && def1.langLocale && obj[def1.langLocale]) {
+          i18n.addResourceBundle(
+            def1.langLocale,
+            "translations",
+            obj[def1.langLocale]
+          );
+          i18n.changeLanguage(def1.langLocale);
+          moment.locale(def1.dateLocale);
+        } else {
+          // Fallback: usar idioma padrão en (inglês)
+          console.warn('⚠️ Idioma não encontrado, usando fallback inglês');
+          i18n.changeLanguage('en');
+          moment.locale('en-gb');
+        }
       }
     }
 
