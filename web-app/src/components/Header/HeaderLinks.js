@@ -32,10 +32,7 @@ export default function HeaderLinks(props) {
   const [multiLanguage,setMultiLanguage] = useState();
 
   const handleLanguageSelect = (event) => {
-    i18n.addResourceBundle(multiLanguage[event].langLocale, 'translations', multiLanguage[event].keyValuePairs);
-    i18n.changeLanguage(multiLanguage[event].langLocale);
-    setLangSelection(event);
-    moment.locale(multiLanguage[event].dateLocale);
+    // Função desabilitada - seletor de idiomas removido
     setIsActive(false);
   };
 
@@ -179,48 +176,6 @@ export default function HeaderLinks(props) {
             <i className={classes.socialIcons + " fab fa-instagram"} />
           </Button>
         </Tooltip>
-      </ListItem>
-      :null}
-        {multiLanguage && multiLanguage.length >1 ?
-      <ListItem className={classes.listItem}>
-        <div style={{ display: "flex", justifyContent: "center", }}>
-            <div style={{ width: '130px',margin:'5px' }} className={`${isActive ? 'active' : ''}`}>
-              <div className={classes.toggleDropdown} onClick={toggleDropdown}>
-                <span
-                  style={{
-                    fontSize: '18px',
-                    color: colors.Header,
-                    fontFamily:FONT_FAMILY
-                  }}
-                >
-                  {multiLanguage[langSelection].langName}
-                </span>
-                <i className={`${isActive ? 'active' : ''}`}
-                  style={{
-                    fontSize: '25px',
-                    transition: '0.3s',
-                    transform: isActive ? 'rotate(-180deg)' : 'rotate(0)',
-                    color:'black'
-                  }}>
-                  <ArrowDropDownIcon /> </i>
-              </div>
-
-              <ul className={classes.optionUl} style={{ display: isActive ? 'block' : 'none', }}>
-                {Object.keys(multiLanguage).map((key, index) => (
-                  <li
-                    className={classes.option}
-                    style={{justifyContent:"center", alignItems:"center"}}
-                    key={key}
-                    onClick={() => handleLanguageSelect(index)}
-                  >
-
-                    <span style={{ fontSize: '16px', color: colors.Header, fontFamily:FONT_FAMILY,  }}>{multiLanguage[key].langName}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-          </div>
       </ListItem>
       :null}
     </List>
