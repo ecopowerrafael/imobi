@@ -19,6 +19,9 @@ jobs:
       
       - name: Install common dependencies
         run: cd common && npm install
+      
+      - name: Create AccessKey.js
+        run: echo 'export default ""' > common/src/other/AccessKey.js
         
       - name: Install web-app dependencies
         run: cd web-app && npm install
