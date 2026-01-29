@@ -1,8 +1,37 @@
 # 🚀 Deploy da Web App - Exicube Taxi
 
-Este guia mostra como colocar o painel administrativo online no Firebase Hosting.
+Este guia mostra como colocar o painel administrativo online.
 
-## ⚡ Quick Start (30 segundos)
+## ⚡ Quick Start - OPÇÃO A: Netlify (RECOMENDADO - 2 minutos)
+
+### 1️⃣ Push para GitHub
+```powershell
+cd "C:\Exicube Taxi App v4.8.1\Exicube Taxi App v4.8.1\Sourcecode"
+git remote add origin https://github.com/SEU_USUARIO/exicube-taxi-app.git
+git branch -M main
+git push -u origin main
+```
+*(Será pedido seu token do GitHub)*
+
+### 2️⃣ Conectar no Netlify
+1. Vá para https://app.netlify.com/
+2. Clique em "New site from Git"
+3. Selecione GitHub e escolha `exicube-taxi-app`
+4. Configuração automática (já temos `netlify.toml`)
+5. Clique em "Deploy"
+
+**Pronto!** Seu app estará online em 2-3 minutos em um URL tipo: `https://exicube-taxi-app.netlify.app`
+
+**Vantagens**:
+✅ Build automático na nuvem (sem problemas locais)
+✅ Deploy automático a cada push
+✅ URL gratuita
+✅ SSL/HTTPS incluído
+✅ Logs visíveis online
+
+---
+
+## ⚡ Quick Start - OPÇÃO B: Firebase Hosting (Local)
 
 ### 1️⃣ Build da aplicação
 ```powershell
