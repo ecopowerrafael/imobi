@@ -106,17 +106,19 @@ export const fetchUser = () => (dispatch) => {
               payload: json
             });
           } else{
+            const langData = store.getState().languagedata?.defaultLanguage;
             dispatch({
               type: FETCH_USER_FAILED,
-              payload: { code: store.getState().languagedata.defaultLanguage.auth_error, message: json.error }
+              payload: { code: langData?.auth_error || 'auth_error', message: json.error }
             });
           }
         }
       });
     } else {
+      const langData = store.getState().languagedata?.defaultLanguage;
       dispatch({
         type: FETCH_USER_FAILED,
-        payload: { code: store.getState().languagedata.defaultLanguage.auth_error, message: store.getState().languagedata.defaultLanguage.not_logged_in }
+        payload: { code: langData?.auth_error || 'auth_error', message: langData?.not_logged_in || 'Not logged in' }
       });
     }
   });
