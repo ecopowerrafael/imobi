@@ -45,12 +45,7 @@ export default function LoginPage(props) {
   const {
     googleLogin,
     clearLoginError,
-    mobileSignIn,
-    countries,
-    sendResetMail,
     verifyEmailPassword,
-    requestMobileOtp,
-    verifyMobileOtp,
     mainSignUp,
     checkUserExists,
     validateReferer
@@ -77,7 +72,6 @@ export default function LoginPage(props) {
     contact: '',
     mobile:"",
     password: '',
-    otp: '',
     verificationId: null,
     firstName: '',
     lastName: '',
@@ -86,8 +80,6 @@ export default function LoginPage(props) {
     referralId:'',
     entryType: null
   });
-
-  const [otpCalled, setOtpCalled] = useState();
 
   const [commonAlert, setCommonAlert] = useState({ open: false, msg: '' });
 
@@ -139,11 +131,7 @@ export default function LoginPage(props) {
         }
       }
     }
-    if(auth.verificationId && otpCalled){
-      setOtpCalled(false);
-      setData({ ...data, verificationId: auth.verificationId });
-    }
-  }, [auth.profile, auth.error, auth.verificationId, navigate, data, data.email, data.contact, capatchaReady,RecaptchaVerifier,t, setData, otpCalled, setOtpCalled]);
+  }, [auth.profile, auth.error, navigate, data, data.email, data.contact, capatchaReady,RecaptchaVerifier,t, setData]);
 
 
   const handleGoogleLogin = (credentialResponse) => {
@@ -168,7 +156,7 @@ export default function LoginPage(props) {
     setData({ ...data, [event.target.id]: event.target.value })
   }
 
-  const handleGetOTP = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     if(data.country){
@@ -179,48 +167,10 @@ export default function LoginPage(props) {
           if(re.test(data.contact)){
             await dispatch(verifyEmailPassword(
               data.contact,
-              data.otp
+              data.password
             ));
           }else{
               setCommonAlert({ open: true, msg: t('proper_email')})
-              setIsLoading(false);
-          }
-        } else{
-          setData({...data, entryType: 'mobile'});
-          if(!settings.AllowCriticalEditsAdmin){
-            setCommonAlert({ open: true, msg: t('in_demo_mobile_login')});
-          }
-          let formattedNum = data.contact.replace(/ /g, '');
-          const phoneNumber = "+" + data.country + formattedNum;
-          if (formattedNum.length > 6) {
-            if(settings.customMobileOTP){
-              dispatch(requestMobileOtp(phoneNumber));
-              setData({...data, verificationId: true});
-              setIsLoading(false)
-            } else {
-              if(!window.recaptchaVerifier || verifier===null){
-                window.recaptchaVerifier = await new RecaptchaVerifier(authRef(),'sign-in-button', {
-                  'size': 'invisible',
-                  'callback': function(response) {
-                    setCapatchaReady(true);
-                  }
-                });
-              }
-              const appVerifier = window.recaptchaVerifier;
-              setVerifier(appVerifier);
-              await signInWithPhoneNumber(authRef(), phoneNumber, appVerifier)
-                .then(res => {
-                    setData({...data, verificationId: res.verificationId})
-                    setIsLoading(false)
-                    window.recaptchaVerifier.clear();
-                })
-                .catch(error => {
-                    setCommonAlert({ open: true, msg: error.code + ": " + error.message});
-                    setIsLoading(false);
-              });
-            }
-          } else {
-              setCommonAlert({ open: true, msg: t('mobile_no_blank_error')})
               setIsLoading(false);
           }
         }
@@ -232,40 +182,6 @@ export default function LoginPage(props) {
       setCommonAlert({ open: true, msg: t('country_blank_error')})
       setIsLoading(false);
     }
-  }
-
-
-  const handleVerifyOTP = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    if(data.otp && data.otp.length === 6){
-      if(settings.customMobileOTP){
-        let formattedNum = data.contact.replace(/ /g, '');
-        const phoneNumber = "+" + data.country + formattedNum;
-        dispatch(verifyMobileOtp(
-          phoneNumber,
-          data.otp
-        ));
-      } else{
-        await dispatch(mobileSignIn(
-          data.verificationId,
-          data.otp
-        ));
-      }
-      setIsLoading(false);
-    }else{
-      setCommonAlert({ open: true, msg: t('otp_validate_error')})
-      setIsLoading(false);
-    }
-  }
-
-  const handleCancel = (e) => {
-    setData({
-      ...data,
-      contact: null,
-      verificationId: null
-    });
-    setIsLoading(false);
   }
 
   const onCountryChange = (object, value) => {
@@ -794,33 +710,8 @@ export default function LoginPage(props) {
                           autoComplete: "off"
                         }}
                         onChange={onInputChange}
-                        value={data.otp}
+                        value={data.password}
                       />
-                    :null}
-
-                      {data.verificationId ?   
-                        <CustomInput
-                          labelText={t('otp')}
-                          id="otp"
-                          formControlProps={{
-                            fullWidth: true
-                          }}
-                          inputProps={{
-                            type: "password",
-                            required: true,
-                            endAdornment: (
-                              <InputAdornment position="start">
-                                <Icon className={classes.inputIconsColor}>
-                                  lock_outline
-                              </Icon>
-                              </InputAdornment>
-                            ),
-                            autoComplete: "off"
-                          }}
-                          onChange={onInputChange}
-                          value={data.otp}
-                        />
-                        : null}
 
                   </CardBody>
                   <CardFooter className={classes.cardFooter}>
@@ -829,10 +720,9 @@ export default function LoginPage(props) {
                     <CircularProgress/>
                   </DialogActions> 
                   :
-                    !data.verificationId ?
                     <div>
-                      <Button className={classes.normalButton} simple color="primary" size="lg" type="submit" onClick={handleGetOTP}>
-                      <Typography fontFamily={FONT_FAMILY}>{settings.mobileLogin ? data.contact && isNaN(data.contact) ? t('login') : t('login_otp') : t('login')}</Typography>
+                      <Button className={classes.normalButton} simple color="primary" size="lg" type="submit" onClick={handleSubmit}>
+                      <Typography fontFamily={FONT_FAMILY}>{t('login')}</Typography>
                       </Button>
                       {data.contact && isNaN(data.contact) ? 
                         <Button className={classes.normalButton} simple color="primary" size="lg" onClick={()=>forgotPassword()}>
@@ -840,18 +730,10 @@ export default function LoginPage(props) {
                         </Button>
                       :null}
                     </div>
-                  :
-                    <div>
-                      <Button className={classes.normalButton} simple color="primary" size="lg" type="submit" onClick={handleVerifyOTP}>
-                      <Typography fontFamily={FONT_FAMILY}>{t('verify_otp')}</Typography>
-                      </Button>
-                      <Button className={classes.normalButton} simple color="primary" size="lg" onClick={handleCancel}>
-                      <Typography fontFamily={FONT_FAMILY}>{t('cancel')}</Typography>
-                      </Button>
-                    </div>
                   }
                   </CardFooter>
                 </form>
+                <>
                 {
                   !isLoading ? 
                   <Button className={classes.normalButton} simple color="primary"  type="submit" size="lg" onClick={handleShowSignup}>
@@ -871,6 +753,7 @@ export default function LoginPage(props) {
                  </Card>
                  :null
                 }
+                </>
               </Card>
             </GridItem>
           </GridContainer>

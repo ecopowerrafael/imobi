@@ -21,8 +21,11 @@ export default function CancellationReasons() {
   } = api;
 
   const columns = [
-    { title: t('reason'), field: 'label',render: rowData => <span>{t(getLangKey(rowData.label))}</span>,
-  }
+    { 
+      title: t('reason'), 
+      field: 'label',
+      render: rowData => <span>{t(getLangKey(rowData.label))}</span>
+    }
   ];
   const settings = useSelector(state => state.settingsdata.settings);
   const [data, setData] = useState([]);
@@ -40,75 +43,82 @@ export default function CancellationReasons() {
   }, [cancelreasondata.complex]);
 
   const [selectedRow, setSelectedRow] = useState(null);
+
+  if (!cancelreasondata || !cancelreasondata.complex || cancelreasondata.complex.length === 0) {
+    return (
+      <div style={{padding: '20px', textAlign: 'center'}}>
+        <p>{t('no_data_found')}</p>
+      </div>
+    );
+  }
+
   return (
-    cancelreasondata.loading ? <CircularLoading /> :
-      <ThemeProvider theme={theme}>
-        <MaterialTable
-          title={t('cancellation_reasons_title')}
-          columns={columns}
-          style={{
-            direction: isRTL === "rtl" ? "rtl" : "ltr",
-            borderRadius: "8px",
-            padding: "20px",
-            boxShadow: `0px 2px 5px ${SECONDORY_COLOR}`,
-          }}
-          data={data}
-          onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow.tableData.id))}
-          options={{
-            exportButton: true,
-            rowStyle: (rowData) => ({
-              backgroundColor:
-                selectedRow === rowData.tableData.id ? colors.ROW_SELECTED :colors.WHITE
-            }),
-            ...TableStyle(settings)
-          }}
-          localization={localization(t)}
-          editable={settings.AllowCriticalEditsAdmin ? {
-              onRowAdd: newData =>
-              new Promise((resolve, reject)=> {
-                setTimeout(async() => {
+    <ThemeProvider theme={theme}>
+      <MaterialTable
+        title={t('cancellation_reasons_title')}
+        columns={columns}
+        style={{
+          direction: isRTL === "rtl" ? "rtl" : "ltr",
+          borderRadius: "8px",
+          padding: "20px",
+          boxShadow: `0px 2px 5px ${SECONDORY_COLOR}`,
+        }}
+        data={data}
+        onRowClick={((evt, selectedRow) => setSelectedRow(selectedRow.tableData.id))}
+        options={{
+          exportButton: true,
+          rowStyle: (rowData) => ({
+            backgroundColor:
+              selectedRow === rowData.tableData.id ? colors.ROW_SELECTED :colors.WHITE
+          }),
+          ...TableStyle(settings)
+        }}
+        localization={localization(t)}
+        editable={{
+          onRowAdd: newData =>
+          new Promise((resolve, reject)=> {
+            setTimeout(async() => {
+              const tblData = data;
+              newData.value = tblData.length;
+              if(!(newData && newData.label)){
+                alert(t('no_details_error'));
+                reject();
+              }else{
+                tblData.push(newData);
+                await convertLanguage(newData.label, auth?.profile?.lang?.langLocale ? auth.profile.lang.langLocale : null);
+                dispatch(editCancellationReason(tblData, "Add"));
+                resolve();
+              }
+            }, 600);
+          }),
+        onRowUpdate: (newData, oldData) =>
+          new Promise((resolve, reject)=> {
+            setTimeout(async() => {
+              if(!(newData && newData.label )){
+                alert(t('no_details_error'));
+                reject();
+              }else {
+                resolve();
+                if(newData !== oldData){
                   const tblData = data;
-                  newData.value = tblData.length;
-                  if(!(newData && newData.label)){
-                    alert(t('no_details_error'));
-                    reject();
-                  }else{
-                    tblData.push(newData);
-                    await convertLanguage(newData.label, auth?.profile?.lang?.langLocale ? auth.profile.lang.langLocale : null);
-                    dispatch(editCancellationReason(tblData, "Add"));
-                    resolve();
-                  }
-                }, 600);
-              }),
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject)=> {
-                setTimeout(async() => {
-                  if(!(newData && newData.label )){
-                    alert(t('no_details_error'));
-                    reject();
-                  }else {
-                    resolve();
-                    if(newData !== oldData){
-                      const tblData = data;
-                      tblData[tblData.indexOf(oldData)] = newData;
-                      await convertLanguage(newData.label, auth?.profile?.lang?.langLocale ? auth.profile.lang.langLocale : null);
-                      dispatch(editCancellationReason(tblData, "Update"));
-                    }
-                  }
-                }, 600);
-              }),
-            onRowDelete: oldData =>
-              new Promise(resolve => {
-                setTimeout(() => {
-                  resolve();
-                  const tblData = data;
-                  const newTtblData = tblData.filter((item) => item.value !== oldData.value);
-                  dispatch(editCancellationReason(newTtblData, "Delete"));
-                }, 600);
-              }),
-              
-          } : null}
-        />
-      </ThemeProvider>
+                  tblData[tblData.indexOf(oldData)] = newData;
+                  await convertLanguage(newData.label, auth?.profile?.lang?.langLocale ? auth.profile.lang.langLocale : null);
+                  dispatch(editCancellationReason(tblData, "Update"));
+                }
+              }
+            }, 600);
+          }),
+        onRowDelete: oldData =>
+          new Promise(resolve => {
+            setTimeout(() => {
+              resolve();
+              const tblData = data;
+              const newTtblData = tblData.filter((item) => item.value !== oldData.value);
+              dispatch(editCancellationReason(newTtblData, "Delete"));
+            }, 600);
+          }),
+        }}
+      />
+    </ThemeProvider>
   );
 }

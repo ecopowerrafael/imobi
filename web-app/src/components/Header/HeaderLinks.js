@@ -4,10 +4,10 @@ import { makeStyles } from "@mui/styles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Tooltip from "@mui/material/Tooltip";
-import { Info, AccountBox, House } from "@mui/icons-material";
+import { Info, AccountBox, House, Logout } from "@mui/icons-material";
 import Button from "components/CustomButtons/Button.js";
 import styles from '../../styles/headerLinksStyle.js';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { Select, MenuItem  } from '@mui/material';
@@ -27,6 +27,22 @@ export default function HeaderLinks(props) {
   const { i18n,t } = useTranslation();
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      // Dispatch logout action para limpar Redux
+      dispatch({ type: 'SIGN_OUT' });
+      
+      // Redirecionar
+      navigate('/');
+      
+      // Recarregar página para limpar cache
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
+  };
 
   const [langSelection, setLangSelection] = useState();
   const [multiLanguage,setMultiLanguage] = useState();
@@ -114,6 +130,18 @@ export default function HeaderLinks(props) {
         <Typography fontFamily = {FONT_FAMILY} >{t('contact_us')}</Typography>
         </Button>
       </ListItem>
+      {loggedIn && (
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            onClick={(e) => { e.preventDefault(); handleLogout(); }}
+          >
+            <Logout className={classes.icons} />
+            <Typography fontFamily={FONT_FAMILY}>Logout</Typography>
+          </Button>
+        </ListItem>
+      )}
       {settings && settings.FacebookHandle?
       <ListItem className={classes.listItem}>
         <Tooltip
