@@ -80,72 +80,34 @@ function AuthLoading(props) {
     console.log("✅ langlist encontrado, setupando i18n");
     languagesSetupRef.current = true; // Marca como executado
     
-    let obj = {};
-    let def1 = {};
-    let ptBR = null; // Procura especificamente por português
+    // 🇧🇷 FORÇA PORTUGUÊS COMO ÚNICO IDIOMA
+    console.log("📋 Buscando português em langlist:", { langlist });
     
-    for (const value of Object.values(langlist)) {
-      obj[value.langLocale] = value.keyValuePairs;
-      // 🇧🇷 FORÇA PORTUGUÊS SE EXISTIR
-      if (value.langLocale === 'pt-BR') {
-        ptBR = value;
-      }
-      if (value.default === true && !ptBR) {
-        def1 = value;
+    let ptBRData = null;
+    
+    // Procura por pt-BR em toda a lista
+    for (let i = 0; i < langlist.length; i++) {
+      const lang = langlist[i];
+      console.log(`  [${i}] ${lang.langLocale} - keyValuePairs: ${lang.keyValuePairs ? Object.keys(lang.keyValuePairs).length + ' chaves' : 'VAZIO'}`);
+      
+      if (lang.langLocale === 'pt-BR') {
+        ptBRData = lang;
       }
     }
     
-    // 🇧🇷 PRIORIDADE: Português > Padrão > Fallback Inglês
-    const langToUse = ptBR || def1 || { langLocale: 'en', dateLocale: 'en-gb' };
-    
-    if(langToUse && langToUse.langLocale){
-      console.log("✅ Carregando idioma:", langToUse.langLocale);
-      const result = localStorage.getItem('lang');
-      
-      // Se houver português, USE português (ignora localStorage)
-      if (ptBR) {
-        console.log("🇧🇷 Português encontrado - FORÇANDO uso");
-        i18n.addResourceBundle(
-          ptBR.langLocale,
-          "translations",
-          ptBR.keyValuePairs
-        );
-        i18n.changeLanguage(ptBR.langLocale);
-        moment.locale(ptBR.dateLocale);
-        localStorage.setItem('lang', JSON.stringify({langLocale: ptBR.langLocale, dateLocale: ptBR.dateLocale}));
-      } else if (result) {
-        let langLocale = JSON.parse(result)['langLocale'];
-        let dateLocale = JSON.parse(result)['dateLocale'];
-        if (langLocale && obj[langLocale]) {
-          i18n.addResourceBundle(
-            langLocale,
-            "translations",
-            obj[langLocale]
-          );
-          i18n.changeLanguage(langLocale);
-          moment.locale(dateLocale);
-        } else if (def1 && def1.langLocale && obj[def1.langLocale]) {
-          i18n.addResourceBundle(
-            def1.langLocale,
-            "translations",
-            obj[def1.langLocale]
-          );
-          i18n.changeLanguage(def1.langLocale);
-          moment.locale(def1.dateLocale);
-        }
-      } else if (langToUse && langToUse.langLocale && obj[langToUse.langLocale]) {
-        i18n.addResourceBundle(
-          langToUse.langLocale,
-          "translations",
-          obj[langToUse.langLocale]
-        );
-        i18n.changeLanguage(langToUse.langLocale);
-        moment.locale(langToUse.dateLocale);
-      } else {
-        // Fallback final
-        console.warn('⚠️ Nenhum idioma disponível');
-        i18n.changeLanguage('pt-BR');
-        moment.locale('pt-br');
+    if (ptBRData && ptBRData.keyValuePairs) {
+      console.log("🇧🇷 PORTUGUÊS ENCONTRADO! Carregando...");
+      i18n.addResourceBundle(
+        'pt-BR',
+        'translations',
+        ptBRData.keyValuePairs
+      );
+      i18n.changeLanguage('pt-BR');
+      moment.locale('pt-br');
+      localStorage.setItem('lang', JSON.stringify({langLocale: 'pt-BR', dateLocale: 'pt-BR'}));
+      console.log("✅ Português carregado com sucesso!");
+    } else {
+      console.warn('⚠️ Português NÃO encontrado! Usando fallback');
         }
       }
     }
