@@ -1,0 +1,13 @@
+[build]
+command = "cd web-app && npm install --legacy-peer-deps && npm run build"
+publish = "web-app/build"
+functions = "functions"
+
+[build.environment]
+NODE_VERSION = "20.20.0"
+NODE_OPTIONS = "--openssl-legacy-provider"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
