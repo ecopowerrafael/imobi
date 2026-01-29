@@ -132,7 +132,7 @@ function AuthLoading(props) {
       console.log("⏳ Aguardando settingsdata.settings...");
       console.log("📍 settingsdata:", settingsdata);
     }
-  }, [settingsdata.settings, dispatch, fetchLanguages, fetchCarTypes]);
+  }, [settingsdata, dispatch, fetchLanguages, fetchCarTypes]);
 
   useEffect(() => {
     console.log("⏳ useEffect 4: User Auth...", { auth });
@@ -187,6 +187,7 @@ function AuthLoading(props) {
       }
     }
   }, [
+    auth,
     auth.profile,
     dispatch,
     fetchBookings,

@@ -7,7 +7,7 @@
 
 import { ref, get, set } from 'firebase/database';
 import { getDatabase } from 'firebase/database';
-import { initializeApp, getApp, getApps } from "firebase/app";
+import { initializeApp, getApp } from "firebase/app";
 import { FirebaseConfig } from '../config/FirebaseConfig';
 
 /**
