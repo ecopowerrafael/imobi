@@ -560,22 +560,7 @@ const MyProfile = () => {
                 />
                 : null}
 
-              {multiLanguage && multiLanguage.length > 1 ?
-                <Select
-                  id="language-select"
-                  className={classes.selectField}
-                  value={langSelection}
-                  variant="outlined"
-                  onChange={handleLanguageSelect}
-                  style={{ backgroundColor: colors.WHITE, width: '100%', marginTop: '16px',justifyContent:"flex-end" }}
-                >
-                  {
-                    Object.keys(multiLanguage).map((key, index) => <MenuItem key={key} value={index} style={{justifyContent:isRTL === 'rtl' ? "flex-end" : "flex-start"}}>
-                      <Typography style={{fontFamily:FONT_FAMILY}}>{multiLanguage[key].langName}</Typography>
-                    </MenuItem>)
-                  }
-                </Select>
-                : null}
+              {/* Seletor de idiomas removido - Apenas Português ativo */}
               {loading ?
                 <Grid
                   container
