@@ -1,6 +1,6 @@
 [build]
 base = "."
-command = "cd web-app && npm install --legacy-peer-deps && npm run build"
+command = "cp common/src/other/AccessKey.example.js common/src/other/AccessKey.js && cd web-app && npm install --legacy-peer-deps && npm run build"
 publish = "web-app/build"
 functions = "functions"
 
