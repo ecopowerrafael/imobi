@@ -80,34 +80,27 @@ function AuthLoading(props) {
     console.log("✅ langlist encontrado, setupando i18n");
     languagesSetupRef.current = true; // Marca como executado
     
-    // 🇧🇷 FORÇA PORTUGUÊS COMO ÚNICO IDIOMA
-    console.log("📋 Buscando português em langlist:", { langlist });
+    // 🇧🇷 CARREGA APENAS LANG1 (COM PORTUGUÊS)
+    console.log("📋 Carregando lang1...", { langlist });
     
-    let ptBRData = null;
-    
-    // Procura por pt-BR em toda a lista
-    for (let i = 0; i < langlist.length; i++) {
-      const lang = langlist[i];
-      console.log(`  [${i}] ${lang.langLocale} - keyValuePairs: ${lang.keyValuePairs ? Object.keys(lang.keyValuePairs).length + ' chaves' : 'VAZIO'}`);
+    if (langlist && langlist.length > 0) {
+      const lang1 = langlist[0]; // Pega o primeiro (e único relevante)
       
-      if (lang.langLocale === 'pt-BR') {
-        ptBRData = lang;
-      }
-    }
-    
-    if (ptBRData && ptBRData.keyValuePairs) {
-      console.log("🇧🇷 PORTUGUÊS ENCONTRADO! Carregando...");
-      i18n.addResourceBundle(
-        'pt-BR',
-        'translations',
-        ptBRData.keyValuePairs
-      );
-      i18n.changeLanguage('pt-BR');
-      moment.locale('pt-br');
-      localStorage.setItem('lang', JSON.stringify({langLocale: 'pt-BR', dateLocale: 'pt-BR'}));
-      console.log("✅ Português carregado com sucesso!");
-    } else {
-      console.warn('⚠️ Português NÃO encontrado! Usando fallback');
+      if (lang1 && lang1.keyValuePairs) {
+        console.log("✅ Carregando idioma:", lang1.langLocale);
+        i18n.addResourceBundle(
+          lang1.langLocale,
+          'translations',
+          lang1.keyValuePairs
+        );
+        i18n.changeLanguage(lang1.langLocale);
+        moment.locale(lang1.dateLocale || 'en-gb');
+        localStorage.setItem('lang', JSON.stringify({langLocale: lang1.langLocale, dateLocale: lang1.dateLocale}));
+        console.log("🇧🇷 Português carregado com sucesso!");
+      } else {
+        console.warn('⚠️ lang1 não tem keyValuePairs, usando fallback');
+        i18n.changeLanguage('en');
+        moment.locale('en-gb');
         }
       }
     }

@@ -251,15 +251,7 @@ const MyProfile = () => {
   const [confirmCodeFunction, setConfirmCodeFunction] = useState();
 
   useEffect(() => {
-    if (languagedata.langlist) {
-      let arr = Object.keys(languagedata.langlist);
-      for (let i = 0; i < arr.length; i++) {
-        if (auth.profile && auth.profile.lang && auth.profile.lang.langLocale && auth.profile.lang.langLocale === languagedata.langlist[arr[i]].langLocale) {
-          setLangSelection(i);
-        }
-      }
-      setMultiLanguage(languagedata.langlist);
-    }
+    // Seletor de idiomas desabilitado - usando apenas lang1 (português)
   }, [languagedata.langlist, auth.profile, setMultiLanguage, setLangSelection]);
 
   useEffect(() => {

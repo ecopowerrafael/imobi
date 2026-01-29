@@ -37,14 +37,7 @@ export default function HeaderLinks(props) {
   };
 
   useEffect(()=>{
-    if(languagedata.langlist){
-      for (const key of Object.keys(languagedata.langlist)) {
-        if(languagedata.langlist[key].langLocale === i18n.language){
-          setLangSelection(key);
-        }
-      }
-      setMultiLanguage(languagedata.langlist);
-    }
+    // Seletor de idiomas desabilitado - usando apenas lang1 (português)
     
   },[languagedata.langlist]);
 
