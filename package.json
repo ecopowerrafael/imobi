@@ -16,8 +16,7 @@
     "app:upgrade-sdk": "yarn workspace mobile-app upgrade-sdk",
     "web": "yarn workspace web-app start",
     "web:deploy": "yarn workspace web-app build && firebase deploy --only hosting",
-    "deploy": "yarn workspace web-app build && firebase deploy && exicube initialize",
-    "postinstall": "exicube install"
+    "deploy": "yarn workspace web-app build && firebase deploy && exicube initialize"
   },
   "workspaces": [
     "mobile-app",
