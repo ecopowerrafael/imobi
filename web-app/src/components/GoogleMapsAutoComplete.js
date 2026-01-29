@@ -10,7 +10,6 @@ import { geocodeByPlaceId } from 'react-places-autocomplete';
 import { useTranslation } from "react-i18next";
 import { WEB_MAIN_COLOR, FONT_FAMILY } from "../common/sharedFunctions";
 import { api } from 'common';
-import uuid from 'react-native-uuid';
 import { useSelector, } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +53,7 @@ export default function GoogleMapsAutoComplete(props) {
   const [UUID, setUUID] = useState();
 
   useEffect(()=>{
-    const uuidv4 = uuid.v4()
+    const uuidv4 = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
     setUUID(uuidv4);
     return () => {
       setUUID(null);
