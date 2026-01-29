@@ -27,7 +27,8 @@ export const fetchLanguages = () => (dispatch) => {
             const arr = Object.keys(data).map(i => {
                 data[i].id = i;
                 if(data[i].default){
-                    defLang = data[i].keyValuePairs;
+                    // Fallback se não tiver keyValuePairs
+                    defLang = data[i].keyValuePairs || { langName: data[i].langName, langLocale: data[i].langLocale };
                 }
                 return data[i]
             });
@@ -35,7 +36,7 @@ export const fetchLanguages = () => (dispatch) => {
             dispatch({
                 type: FETCH_LANGUAGE_SUCCESS,
                 payload: {
-                    defaultLanguage: defLang,
+                    defaultLanguage: defLang || { langName: 'English', langLocale: 'en' },
                     langlist: arr
                 }
             });
