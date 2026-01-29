@@ -48,11 +48,11 @@ function AuthLoading(props) {
 
   // Timeout para evitar loader infinito
   useEffect(() => {
-    // Se não carregou em 15 segundos, força o carregamento mesmo assim
+    // Se não carregou em 30 segundos, força o carregamento mesmo assim
     loadingTimeout.current = setTimeout(() => {
-      console.warn("⚠️ Timeout ao carregar dados. Forçando carregamento...");
-      // Aqui você pode adicionar uma ação de fallback se necessário
-    }, 15000);
+      console.warn("⚠️ Timeout ao carregar dados. Forçando carregamento após 30 segundos...");
+      // O componente vai renderizar mesmo que ainda esteja carregando
+    }, 30000);
 
     return () => clearTimeout(loadingTimeout.current);
   }, []);
@@ -220,14 +220,18 @@ function AuthLoading(props) {
   return settingsdata.loading ? (
     <CircularLoading />
   ) : settingsdata.settings ? (
-    auth.loading || !languagedata.langlist ? (
-      <CircularLoading />
-    ) : (
+    // Se settings carregou, mostra o conteúdo mesmo que auth ainda esteja carregando
+    // (auth.loading pode levar mais tempo)
+    languagedata.langlist ? (
       props.children
+    ) : (
+      <CircularLoading />
     )
   ) : (
     <div>
       <span>No Database Settings found</span>
+    </div>
+  );
   </div>
   );
 }
