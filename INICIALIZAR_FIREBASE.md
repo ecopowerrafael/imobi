@@ -39,6 +39,16 @@ decimal: 2
 
 ---
 
+## Passo 4: IMPORTAR TRADUÇÕES EM PORTUGUÊS (Opcional)
+
+Se quiser o painel em **Português**:
+
+1. Abra: `IMPORTAR_PORTUGUES_FIREBASE.md`
+2. Siga as instruções (leva 5 minutos)
+3. Pronto! App estará em português 🇧🇷
+
+---
+
 ## Depois que os dados estiverem no Firebase:
 
 1. Clique em **DEPLOY.bat** para colocar o painel online
